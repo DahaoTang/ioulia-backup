@@ -3,7 +3,6 @@ type HeadingProps = {
 	className?: string;
 };
 
-
 const Heading1: React.FC<HeadingProps> = ({ children, className }) => {
 	return (
 		<div className={`text-5xl font-bold  ${className || ""}`}>{children}</div>
