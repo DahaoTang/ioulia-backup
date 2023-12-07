@@ -12,6 +12,7 @@ import {
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
 import { Heading1 } from "@/components/headings";
+import { Menu } from "@/components/menu";
 
 const outfit = Outfit({ subsets: ["latin"], display: "swap" });
 
@@ -27,12 +28,12 @@ function Header() {
 				<Heading1 className="pl-10 text-sky-600">ioulia</Heading1>
 			</div>
 			<div className="w-full flex items-center justify-end pr-10">
-				{/* <SignedOut>
+				<SignedOut>
 					<SignInButton />
 				</SignedOut>
 				<SignedIn>
 					<Menu />
-				</SignedIn> */}
+				</SignedIn>
 			</div>
 		</header>
 	);
