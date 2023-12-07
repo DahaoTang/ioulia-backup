@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 
+import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
@@ -19,12 +20,13 @@ export default function RootLayout({
 }) {
 	return (
 		<ClerkProvider>
-			<html lang="en">
-				<body className={outfit.className}>
+			<html lang="en" suppressHydrationWarning>
+				<body className={cn(outfit.className, "bg-neutral-50 dark:bg-neutral-900")}>
 					<ThemeProvider
 						attribute="class"
-						defaultTheme="system"
-						enableSystem
+						defaultTheme="dark"
+						enableSystem={false}
+						storageKey="ioulia-theme"
 						disableTransitionOnChange
 					>
 						{children}
