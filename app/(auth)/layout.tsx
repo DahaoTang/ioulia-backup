@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
-import "./globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
 
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
 	description: "Personal AI Assistant",
 };
 
-export default function RootLayout({
+export default function AuthLayout({
 	children,
 }: {
 	children: React.ReactNode;

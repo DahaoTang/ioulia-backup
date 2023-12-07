@@ -1,6 +1,6 @@
 "use client";
 
-import { Heading1 } from "@/app/components/Headings";
+import { Heading1 } from "@/components/Headings";
 
 export default function Home() {
 	return (
