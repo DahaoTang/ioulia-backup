@@ -1,7 +1,7 @@
 type HeadingProps = {
 	children: string;
 	className?: string;
-}
+};
 
 const Heading1: React.FC<HeadingProps> = ({ children, className }) => {
 	return (
