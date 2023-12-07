@@ -16,10 +16,8 @@ export default function AuthLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<ClerkProvider>
-			<html lang="en">
-				<body className={outfit.className}>{children}</body>
-			</html>
-		</ClerkProvider>
+		<div className="h-full flex justify-center items-center bg-gradient-to-br from-emerald-300 from-10% via-blue-300 via-30% to-fuchsia-300 to-90%">
+			{children}
+		</div>
 	);
 }
