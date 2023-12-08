@@ -10,15 +10,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+model Category {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
-  Alias String?
-  firstName String
-  middleName String?
-  lastName String
+  name  String
+  notes Note[]
+}
 
-  hashedPassword String?
+model Tag {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
-  email String @unique
+  name  String
+  notes Note[]
+}
+
+model Note {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  title String
+
+  level Int @default(0)
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String   @db.ObjectId
+
+  tag   Tag    @relation(fields: [tagId], references: [id])
+  tagId String @db.ObjectId
+
+  content String
 }

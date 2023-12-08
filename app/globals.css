@@ -88,5 +88,5 @@ body,
 }
 
 .animate-horizontal-expand {
-	animation: horizontal-expand 3s ease forwards;
+	animation: horizontal-expand 1s ease forwards;
 }

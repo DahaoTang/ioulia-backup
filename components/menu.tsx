@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { UserButton } from "@clerk/nextjs";
 import { useTheme } from "next-themes";
 
@@ -12,24 +14,33 @@ import {
 } from "@/components/ui/menubar";
 
 export function Menu() {
+	const router = useRouter();
 	const { setTheme } = useTheme();
+
 	return (
-		<Menubar className="outline outline-sky-300">
-			<MenubarMenu>
-				<MenubarTrigger>Services</MenubarTrigger>
-				<MenubarContent>
-					<MenubarItem>AI Assistant</MenubarItem>
-				</MenubarContent>
-			</MenubarMenu>
-			<MenubarMenu>
-				<MenubarTrigger>Colour Theme</MenubarTrigger>
-				<MenubarContent>
-					<MenubarItem onClick={() => setTheme("light")}>Light</MenubarItem>
-					<MenubarItem onClick={() => setTheme("dark")}>Dark</MenubarItem>
-					<MenubarItem onClick={() => setTheme("system")}>System</MenubarItem>
-				</MenubarContent>
-			</MenubarMenu>
+		<div className="flex flex-row items-center">
+			<Menubar className="outline outline-sky-300 mr-5">
+				<MenubarMenu>
+					<MenubarTrigger>Services</MenubarTrigger>
+					<MenubarContent>
+						<MenubarItem onClick={() => router.push("/chat")}>
+							Chatbot
+						</MenubarItem>
+						<MenubarItem onClick={() => router.push("/notes")}>
+							Notes
+						</MenubarItem>
+					</MenubarContent>
+				</MenubarMenu>
+				<MenubarMenu>
+					<MenubarTrigger>Colour Theme</MenubarTrigger>
+					<MenubarContent>
+						<MenubarItem onClick={() => setTheme("light")}>Light</MenubarItem>
+						<MenubarItem onClick={() => setTheme("dark")}>Dark</MenubarItem>
+						<MenubarItem onClick={() => setTheme("system")}>System</MenubarItem>
+					</MenubarContent>
+				</MenubarMenu>
+			</Menubar>
 			<UserButton afterSignOutUrl="/" />
-		</Menubar>
+		</div>
 	);
 }

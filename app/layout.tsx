@@ -29,7 +29,7 @@ function Header() {
 			</div>
 			<div className="w-full flex items-center justify-end pr-10">
 				<SignedOut>
-					<SignInButton afterSignInUrl="/" afterSignUpUrl="/sign-in"/>
+					<SignInButton afterSignInUrl="/" afterSignUpUrl="/sign-in" />
 				</SignedOut>
 				<SignedIn>
 					<Menu />
