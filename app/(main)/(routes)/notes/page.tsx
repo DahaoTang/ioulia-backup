@@ -1,9 +1,22 @@
-"use client";
+import { auth } from "@clerk/nextjs";
+import prisma from "@/lib/db/prisma";
+import SubHeadBar from "./sub-headbar";
 
-export default function NotesPage() {
+export default async function NotesPage() {
+	const { userId } = auth();
+
+	if (!userId) throw Error("userId undefined");
+
+	const allNotes = await prisma.note.findMany({
+		where: {
+			userId: userId,
+		},
+	});
+
 	return (
 		<div>
-			<div>Notes Page</div>
+			<SubHeadBar />
+			<div>{JSON.stringify(allNotes)}</div>
 		</div>
 	);
 }
