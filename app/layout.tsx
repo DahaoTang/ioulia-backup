@@ -48,7 +48,8 @@ export default function RootLayout({
 		<ClerkProvider>
 			<html lang="en" suppressHydrationWarning>
 				<body className={cn(outfit.className, "min-h-screen")}>
-					<ThemeProvider
+					{children}
+					{/* <ThemeProvider
 						attribute="class"
 						defaultTheme="dark"
 						enableSystem={true}
@@ -74,7 +75,7 @@ export default function RootLayout({
 								</div>
 							</div>
 						</div>
-					</ThemeProvider>
+					</ThemeProvider> */}
 				</body>
 			</html>
 		</ClerkProvider>
