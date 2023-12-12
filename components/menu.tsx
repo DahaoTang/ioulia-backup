@@ -21,13 +21,13 @@ export function Menu() {
 		<div className="flex flex-row items-center">
 			<Menubar className="outline outline-sky-300 mr-5">
 				<MenubarMenu>
-					<MenubarTrigger>Services</MenubarTrigger>
+					<MenubarTrigger>Chat</MenubarTrigger>
 					<MenubarContent>
 						<MenubarItem onClick={() => router.push("/chat")}>
 							Chatbot
 						</MenubarItem>
-						<MenubarItem onClick={() => router.push("/notes")}>
-							Notes
+						<MenubarItem onClick={() => router.push("/records")}>
+							Records
 						</MenubarItem>
 					</MenubarContent>
 				</MenubarMenu>

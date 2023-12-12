@@ -25,9 +25,9 @@ function Header() {
 	return (
 		<header className="w-full h-[8vh] flex flex-row items-center">
 			<div>
-				<Heading1 className="pl-10 text-sky-600">ioulia</Heading1>
+				<Heading1 className="pl-5 text-sky-600">ioulia</Heading1>
 			</div>
-			<div className="w-full flex items-center justify-end pr-10">
+			<div className="w-full flex items-center justify-end pr-5">
 				<SignedOut>
 					<SignInButton afterSignInUrl="/" afterSignUpUrl="/sign-in" />
 				</SignedOut>
@@ -48,8 +48,7 @@ export default function RootLayout({
 		<ClerkProvider>
 			<html lang="en" suppressHydrationWarning>
 				<body className={cn(outfit.className, "min-h-screen")}>
-					{children}
-					{/* <ThemeProvider
+					<ThemeProvider
 						attribute="class"
 						defaultTheme="dark"
 						enableSystem={true}
@@ -75,7 +74,7 @@ export default function RootLayout({
 								</div>
 							</div>
 						</div>
-					</ThemeProvider> */}
+					</ThemeProvider>
 				</body>
 			</html>
 		</ClerkProvider>

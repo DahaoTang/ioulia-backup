@@ -16,7 +16,7 @@ model Category {
   updatedAt DateTime @default(now())
 
   name  String
-  notes Note[]
+  notes Record[]
 }
 
 model Tag {
@@ -25,10 +25,10 @@ model Tag {
   updatedAt DateTime @default(now())
 
   name  String
-  notes Note[]
+  notes Record[]
 }
 
-model Note {
+model Record {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())

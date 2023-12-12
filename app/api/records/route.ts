@@ -1,5 +1,5 @@
 import prisma from "@/lib/db/prisma";
-import { createNoteSchema } from "@/lib/validation/note";
+import { createRecordSchema } from "@/lib/validation/record";
 import { auth } from "@clerk/nextjs";
 
 export async function POST(req: Request) {
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
 		const body = await req.json();
 
-		const parseResult = createNoteSchema.safeParse(body);
+		const parseResult = createRecordSchema.safeParse(body);
 		if (!parseResult.success) {
 			console.error(parseResult.error);
 			return Response.json({ error: "Invalid input" }, { status: 400 });
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
 		const { title, content } = parseResult.data;
 
-		const note = await prisma.note.create({
+		const note = await prisma.record.create({
 			data: {
 				title: title,
 				content: content ?? "",
