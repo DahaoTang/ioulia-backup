@@ -7,16 +7,15 @@ export default async function RecordsPage() {
 
 	if (!userId) throw Error("userId undefined");
 
-	// const allRecords = await prisma.record.findMany({
-	// 	where: {
-	// 		userId: userId,
-	// 	},
-	// });
-	const allRecords = {};
+	const allRecords = await prisma.record.findMany({
+		where: {
+			userId: userId,
+		},
+	});
 
 	return (
 		<div className="m-5">
-			<SubHeadBar />
+			<SubHeadBar userId={userId} />
 			<div>{JSON.stringify(allRecords)}</div>
 		</div>
 	);

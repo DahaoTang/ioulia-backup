@@ -19,13 +19,14 @@ export async function POST(req: Request) {
 
 		const { title, content } = parseResult.data;
 
-		const note = await prisma.record.create({
+		const record = await prisma.record.create({
 			data: {
 				title: title,
 				content: content ?? "",
 				userId: userId,
 			},
 		});
+		return Response.json({ success: true, record }, { status: 200 });
 	} catch (error) {
 		console.log(error);
 		return Response.json({ error: "Internal server error" }, { status: 500 });
