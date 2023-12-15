@@ -40,43 +40,41 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
 	try {
-		const body = await req.json();
-
-		const parseResult = getRecordSchema.safeParse(body);
-		if (!parseResult.success) {
-			console.error(parseResult.error);
-			return Response.json({ error: "Invalid input" }, { status: 400 });
+		const { userId } = auth();
+		if (!userId) {
+			return Response.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
-		const { id, query } = parseResult.data;
+		const url = new URL(req.url);
+		const query = url.searchParams.get("query")?.trim() ?? "";
 
-		const records = await prisma.record.findMany({
-			where: {
-				userId: id,
-				OR: [
-					{
-						title: {
-							contains: query,
-							mode: "insensitive",
+		let records;
+		if (query) {
+			records = await prisma.record.findMany({
+				where: {
+					userId: userId,
+					OR: [
+						{
+							title: {
+								contains: query,
+								mode: "insensitive",
+							},
 						},
-					},
-					{
-						content: {
-							contains: query,
-							mode: "insensitive",
+						{
+							content: {
+								contains: query,
+								mode: "insensitive",
+							},
 						},
-					},
-				],
-			},
-		});
+					],
+				},
+			});
+		} else {
+			records = await prisma.record.findMany({ where: { userId } });
+		}
 
 		if (!records) {
 			return Response.json({ error: "Records not found" }, { status: 404 });
-		}
-
-		const { userId } = auth();
-		if (!userId || userId != records[0].userId) {
-			return Response.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
 		return Response.json({ success: true, records }, { status: 200 });
