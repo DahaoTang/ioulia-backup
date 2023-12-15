@@ -1,9 +1,15 @@
-"use client";
+import { auth } from "@clerk/nextjs";
+
+import Main from "@/app/(main)/(routes)/chat/main";
 
 export default function ChatPage() {
+	const { userId } = auth();
+
+	if (!userId) throw Error("userId undefined");
+
 	return (
 		<div>
-			<div>Chat Page</div>
+			<Main userId={userId} />
 		</div>
 	);
 }
