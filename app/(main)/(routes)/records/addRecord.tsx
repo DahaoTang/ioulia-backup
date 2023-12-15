@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
-
 import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,8 +48,6 @@ const AddRecord: React.FC<AddRecordProps> = ({ userId }) => {
 				body: JSON.stringify(inputData),
 			});
 			if (response.ok) {
-				console.log(response);
-				console.log(userId);
 				reset();
 				router.refresh();
 			} else {
