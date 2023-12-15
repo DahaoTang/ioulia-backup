@@ -87,17 +87,6 @@ const Records: React.FC<RecordsProps> = ({ userId }) => {
 		router.refresh();
 	};
 
-	// useEffect(() => {
-	// 	console.log(
-	// 		"Record id",
-	// 		currentRecordId,
-	// 		"\nRecord title: ",
-	// 		currentRecordTitle,
-	// 		"\nRecord content: ",
-	// 		currentRecordContent
-	// 	);
-	// }, [currentRecordId, currentRecordTitle, currentRecordContent]);
-
 	const handleSubmit = async () => {
 		if (currentRecordId !== null) {
 			const dataToUpdate = {
