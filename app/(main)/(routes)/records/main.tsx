@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { z } from "zod";
 import {
+	createRecordSchema,
 	deleteRecordSchema,
 	updateRecordSchema,
 } from "@/lib/validation/record";
@@ -26,12 +27,11 @@ import {
 	DialogTitle,
 	DialogFooter,
 	DialogDescription,
+	DialogHeader,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
-import AddRecord from "@/app/(main)/(routes)/records/addRecord";
 
 interface RecordsProps {
 	userId: string;
@@ -43,11 +43,15 @@ type Record = {
 	content: string;
 };
 
-const Records: React.FC<RecordsProps> = ({ userId }) => {
+const Main: React.FC<RecordsProps> = ({ userId }) => {
 	const router = useRouter();
+
+	const [createTitle, setCreateTitle] = useState("");
+	const [createContent, setCreateContent] = useState("");
 
 	const [query, setQuery] = useState("");
 	const [allRecords, setAllRecords] = useState([]);
+
 	const [currentRecordId, setCurrentRecordId] = useState<number | null>(null);
 	const [currentRecordTitle, setCurrentRecordTitle] = useState("");
 	const [currentRecordContent, setCurrentRecordContent] = useState("");
@@ -76,6 +80,33 @@ const Records: React.FC<RecordsProps> = ({ userId }) => {
 		handleSearch(userId);
 	}, [userId, handleSearch]);
 
+	const handleCreate = async () => {
+		try {
+			const dataToCreate = {
+				title: createTitle,
+				content: createContent,
+			};
+			const validatedData = createRecordSchema.parse(dataToCreate);
+			const response = await fetch("/api/records", {
+				method: "POST",
+				body: JSON.stringify(validatedData),
+			});
+			if (response.ok) {
+				console.log("Create successful");
+				handleSearch(userId);
+			} else {
+				throw Error("Status code: " + response.status);
+			}
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				console.error("Validation error:", error.errors);
+				alert(error.errors[0].message);
+			} else {
+				console.error("Fetch error:", error);
+			}
+		}
+	};
+
 	const handleManageButtonClick = (
 		recordId: number,
 		recordTitle: string,
@@ -87,7 +118,7 @@ const Records: React.FC<RecordsProps> = ({ userId }) => {
 		router.refresh();
 	};
 
-	const handleSubmit = async () => {
+	const handleUpdate = async () => {
 		if (currentRecordId !== null) {
 			const dataToUpdate = {
 				id: currentRecordId.toString(),
@@ -158,7 +189,71 @@ const Records: React.FC<RecordsProps> = ({ userId }) => {
 					/>
 				</div>
 				<div className="ml-10">
-					<AddRecord userId={userId} />
+					<Dialog>
+						<DialogTrigger asChild>
+							<Button variant="outline">Add Records</Button>
+						</DialogTrigger>
+						<DialogContent className="sm:max-w-[425px]">
+							<DialogHeader>
+								<DialogTitle>Create a new Record</DialogTitle>
+								<DialogDescription>
+									<br />
+									Create a new Record manually so that your AI assitant will
+									remember it the future conversations.
+									<br />
+									<br />
+									Please note like, just like a real human friend / secratery,
+									if some thing is not brought up during a long peirod of time,
+									humans tend to forget it. Similarly your AI assistant may
+									delete the record for more space or give it a very low
+									priority when searching through the database if the record is
+									not brought up during conversations in a very long period of
+									time.
+								</DialogDescription>
+							</DialogHeader>
+							<div className="grid gap-4 py-4">
+								<div className="grid grid-cols-4 items-center gap-4">
+									<Label htmlFor="title" className="text-right">
+										Title
+									</Label>
+									<Input
+										id="title"
+										value={createTitle}
+										onChange={(e) => {
+											setCreateTitle(e.target.value);
+										}}
+										className="col-span-3"
+									/>
+								</div>
+								<div className="w-full flex items-center justify-center"></div>
+								<div className="grid grid-cols-4 items-center gap-4">
+									<Label htmlFor="content" className="text-right">
+										Content
+									</Label>
+									<Textarea
+										id="content"
+										value={createContent}
+										onChange={(e) => {
+											setCreateContent(e.target.value);
+										}}
+										className="col-span-3 h-[20vh]"
+									/>
+								</div>
+								<div className="w-full flex items-center justify-center"></div>
+							</div>
+							<DialogFooter>
+								<DialogClose asChild>
+									<Button
+										onClick={() => {
+											handleCreate();
+										}}
+									>
+										Create Record
+									</Button>
+								</DialogClose>
+							</DialogFooter>
+						</DialogContent>
+					</Dialog>
 				</div>
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -252,7 +347,7 @@ const Records: React.FC<RecordsProps> = ({ userId }) => {
 										<DialogClose asChild className="w-[85%]">
 											<Button
 												onClick={() => {
-													handleSubmit();
+													handleUpdate();
 												}}
 											>
 												Save
@@ -269,4 +364,4 @@ const Records: React.FC<RecordsProps> = ({ userId }) => {
 	);
 };
 
-export default Records;
+export default Main;

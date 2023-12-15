@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs";
 
-import Records from "@/app/(main)/(routes)/records/records";
+import Main from "@/app/(main)/(routes)/records/main";
 
 export default function RecordsPage() {
 	const { userId } = auth();
@@ -9,7 +9,7 @@ export default function RecordsPage() {
 
 	return (
 		<div className="m-5">
-			<Records userId={userId} />
+			<Main userId={userId} />
 		</div>
 	);
 }

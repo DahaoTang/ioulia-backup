@@ -8,7 +8,7 @@ export const createRecordSchema = z.object({
 	content: z.string().optional(),
 });
 
-export type CreateRecordSchema = z.infer<typeof createRecordSchema>;
+// export type CreateRecordSchema = z.infer<typeof createRecordSchema>;
 
 export const getRecordSchema = z.object({
 	id: z.string().min(1),
