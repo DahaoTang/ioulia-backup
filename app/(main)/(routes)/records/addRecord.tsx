@@ -2,6 +2,9 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
+
+import { useRouter } from "next/navigation";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	CreateRecordSchema,
@@ -11,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
@@ -21,20 +25,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useRouter } from "next/navigation";
 
 interface AddRecordProps {
 	userId: string;
-	open: boolean;
-	setOpen: (open: boolean) => void;
 }
 
-const AddRecord: React.FC<AddRecordProps> = ({ userId, open, setOpen }) => {
+const AddRecord: React.FC<AddRecordProps> = ({ userId }) => {
 	const router = useRouter();
 
 	const {
 		register,
 		handleSubmit,
+		reset,
 		formState: { errors },
 	} = useForm<CreateRecordSchema>({
 		resolver: zodResolver(createRecordSchema),
@@ -47,10 +49,10 @@ const AddRecord: React.FC<AddRecordProps> = ({ userId, open, setOpen }) => {
 				body: JSON.stringify(inputData),
 			});
 			if (response.ok) {
-				console.log(response.formData);
+				console.log(response);
+				console.log(userId);
+				reset();
 				router.refresh();
-				setOpen(false);
-				console.log("reached");
 			} else {
 				throw Error("Status code: " + response.status);
 			}
@@ -120,7 +122,9 @@ const AddRecord: React.FC<AddRecordProps> = ({ userId, open, setOpen }) => {
 						</div>
 					</div>
 					<DialogFooter>
-						<Button type="submit">Create Record</Button>
+						<DialogClose asChild>
+							<Button type="submit">Create Record</Button>
+						</DialogClose>
 					</DialogFooter>
 				</form>
 			</DialogContent>

@@ -11,8 +11,6 @@ interface SubHeadBarProps {
 }
 
 const SubHeadBar: React.FC<SubHeadBarProps> = ({ userId }) => {
-	const [open, setOpen] = useState(false);
-
 	return (
 		<div className="w-full flex flex-row justify-between mb-5">
 			<div className="flex flex-row">
@@ -22,7 +20,7 @@ const SubHeadBar: React.FC<SubHeadBarProps> = ({ userId }) => {
 				</Button>
 			</div>
 			<div className="ml-10">
-				<AddRecord userId={userId} open={open} setOpen={setOpen} />
+				<AddRecord userId={userId} />
 			</div>
 		</div>
 	);
