@@ -4,17 +4,18 @@ import { ChatWindow } from "@/components/chat/chatWindow";
 
 interface ChatProps {
 	userId: string;
+	dateString: string;
 }
 
-const Main: React.FC<ChatProps> = ({ userId }) => {
+const Main: React.FC<ChatProps> = ({ userId, dateString }) => {
 	const emptyInfoCard = <></>;
 
 	return (
 		<ChatWindow
 			endpoint="api/chat"
-			emoji="🏴‍☠️"
-			titleText="Patchy the Chatty Pirate"
-			placeholder="I'm an LLM pretending to be a pirate! Ask me about the pirate life!"
+			emoji=""
+			titleText={dateString}
+			placeholder="I am Ioulia, your personal AI assistant. Help may I help you today?"
 			emptyStateComponent={emptyInfoCard}
 		></ChatWindow>
 	);

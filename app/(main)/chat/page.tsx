@@ -7,9 +7,12 @@ export default function ChatPage() {
 
 	if (!userId) throw Error("userId undefined");
 
+	const now = new Date();
+	const dateString = now.toLocaleDateString(); // e.g., '12/17/2023'
+
 	return (
 		<div>
-			<Main userId={userId} />
+			<Main userId={userId} dateString={dateString}/>
 		</div>
 	);
 }
