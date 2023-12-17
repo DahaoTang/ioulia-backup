@@ -5,7 +5,7 @@ import {
 	deleteRecordSchema,
 	updateRecordSchema,
 } from "@/lib/validation/record";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
 	try {

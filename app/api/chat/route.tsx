@@ -1,69 +1,108 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 
+import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import { BytesOutputParser } from "langchain/schema/output_parser";
-import { PromptTemplate } from "langchain/prompts";
+import { SerpAPI } from "langchain/tools";
+import { Calculator } from "langchain/tools/calculator";
+
+import { AIMessage, ChatMessage, HumanMessage } from "langchain/schema";
+import { BufferMemory, ChatMessageHistory } from "langchain/memory";
+import { auth } from "@clerk/nextjs/server";
 
 export const runtime = "edge";
 
-const formatMessage = (message: VercelChatMessage) => {
-	return `${message.role}: ${message.content}`;
+const convertVercelMessageToLangChainMessage = (message: VercelChatMessage) => {
+	if (message.role === "user") {
+		return new HumanMessage(message.content);
+	} else if (message.role === "assistant") {
+		return new AIMessage(message.content);
+	} else {
+		return new ChatMessage(message.content, message.role);
+	}
 };
 
-const TEMPLATE = `You are a private personal secretary named Ioulia. All responses must be professional, considerable, valuable and information-rich.
-
-Current conversation:
-{chat_history}
-
-User: {input}
-AI:`;
+const PREFIX_TEMPLATE = `You are a helpful private assistant named ioulia. Your job is to help the user with all different kinds of tasks, including day-to-day life ones and professional ones.`;
 
 /**
- * This handler initializes and calls a simple chain with a prompt,
- * chat model, and output parser. See the docs for more information:
+ * This handler initializes and calls an OpenAI Functions agent.
+ * See the docs for more information:
  *
- * https://js.langchain.com/docs/guides/expression_language/cookbook#prompttemplate--llm--outputparser
+ * https://js.langchain.com/docs/modules/agents/agent_types/openai_functions_agent
  */
 export async function POST(req: NextRequest) {
 	try {
+		const { userId } = auth();
+		if (!userId) {
+			return Response.json({ error: "Unauthorized" }, { status: 401 });
+		}
 		const body = await req.json();
-		const messages = body.messages ?? [];
-		const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage);
+		/**
+		 * We represent intermediate steps as system messages for display purposes,
+		 * but don't want them in the chat history.
+		 */
+		const messages = (body.messages ?? []).filter(
+			(message: VercelChatMessage) =>
+				message.role === "user" || message.role === "assistant"
+		);
+		const returnIntermediateSteps = body.show_intermediate_steps;
+		const previousMessages = messages
+			.slice(0, -1)
+			.map(convertVercelMessageToLangChainMessage);
 		const currentMessageContent = messages[messages.length - 1].content;
-		const prompt = PromptTemplate.fromTemplate(TEMPLATE);
+
+		// Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
+		const tools = [new Calculator(), new SerpAPI()];
+		const chat = new ChatOpenAI({ modelName: "gpt-4", temperature: 0 });
+
 		/**
-		 * You can also try e.g.:
-		 *
-		 * import { ChatAnthropic } from "langchain/chat_models/anthropic";
-		 * const model = new ChatAnthropic({});
-		 *
-		 * See a full list of supported models at:
-		 * https://js.langchain.com/docs/modules/model_io/models/
+		 * The default prompt for the OpenAI functions agent has a placeholder
+		 * where chat messages get injected - that's why we set "memoryKey" to
+		 * "chat_history". This will be made clearer and more customizable in the future.
 		 */
-		const model = new ChatOpenAI({
-			temperature: 0.8,
+		const executor = await initializeAgentExecutorWithOptions(tools, chat, {
+			agentType: "openai-functions",
+			verbose: true,
+			returnIntermediateSteps,
+			memory: new BufferMemory({
+				memoryKey: "chat_history",
+				chatHistory: new ChatMessageHistory(previousMessages),
+				returnMessages: true,
+				outputKey: "output",
+			}),
+			agentArgs: {
+				prefix: PREFIX_TEMPLATE,
+			},
 		});
-		/**
-		 * Chat models stream message chunks rather than bytes, so this
-		 * output parser handles serialization and byte-encoding.
-		 */
-		const outputParser = new BytesOutputParser();
 
-		/**
-		 * Can also initialize as:
-		 *
-		 * import { RunnableSequence } from "langchain/schema/runnable";
-		 * const chain = RunnableSequence.from([prompt, model, outputParser]);
-		 */
-		const chain = prompt.pipe(model).pipe(outputParser);
-
-		const stream = await chain.stream({
-			chat_history: formattedPreviousMessages.join("\n"),
+		const result = await executor.call({
 			input: currentMessageContent,
 		});
 
-		return new StreamingTextResponse(stream);
+		// Intermediate steps are too complex to stream
+		if (returnIntermediateSteps) {
+			return NextResponse.json(
+				{ output: result.output, intermediate_steps: result.intermediateSteps },
+				{ status: 200 }
+			);
+		} else {
+			/**
+			 * Agent executors don't support streaming responses (yet!), so stream back the
+			 * complete response one character at a time with a delay to simluate it.
+			 */
+			const textEncoder = new TextEncoder();
+			const fakeStream = new ReadableStream({
+				async start(controller) {
+					for (const character of result.output) {
+						controller.enqueue(textEncoder.encode(character));
+						await new Promise((resolve) => setTimeout(resolve, 20));
+					}
+					controller.close();
+				},
+			});
+
+			return new StreamingTextResponse(fakeStream);
+		}
 	} catch (e: any) {
 		return NextResponse.json({ error: e.message }, { status: 500 });
 	}
