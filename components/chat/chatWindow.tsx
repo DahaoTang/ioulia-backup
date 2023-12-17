@@ -8,9 +8,9 @@ import { useRef, useState, ReactElement } from "react";
 import type { FormEvent } from "react";
 import type { AgentStep } from "langchain/schema";
 
-import { ChatMessageBubble } from "@/components/chatMessageBubble";
-import { UploadDocumentsForm } from "@/components/uploadDocumentsForm";
-import { IntermediateStep } from "@/components/intermediaStep";
+import { ChatMessageBubble } from "@/components/chat/chatMessageBubble";
+import { UploadDocumentsForm } from "@/components/chat/uploadDocumentsForm";
+import { IntermediateStep } from "@/components/chat/intermediaStep";
 
 export function ChatWindow(props: {
 	endpoint: string;
