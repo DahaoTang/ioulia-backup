@@ -35,12 +35,12 @@ model Record {
 
   userId String
 
-  level Int @default(0)
+  level      Int       @default(0)
   category   Category? @relation(fields: [categoryId], references: [id])
   categoryId String?   @db.ObjectId
-  tag   Tag?    @relation(fields: [tagId], references: [id])
-  tagId String? @db.ObjectId
+  tag        Tag?      @relation(fields: [tagId], references: [id])
+  tagId      String?   @db.ObjectId
 
-  title String
+  title   String
   content String
 }
