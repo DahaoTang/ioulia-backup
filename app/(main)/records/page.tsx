@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs";
 
-import Main from "@/app/(main)/(routes)/records/main";
+import Main from "@/app/(main)/records/main";
 
 export default function RecordsPage() {
 	const { userId } = auth();

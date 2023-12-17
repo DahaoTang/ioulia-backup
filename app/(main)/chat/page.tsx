@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs";
 
-import Main from "@/app/(main)/(routes)/chat/main";
+import Main from "@/app/(main)/chat/main";
 import { ChatWindow } from "@/components/chatWindow";
 
 export default function ChatPage() {
