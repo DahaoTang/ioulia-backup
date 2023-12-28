@@ -1,6 +1,6 @@
 "use client";
 
-import { ChatWindow } from "@/components/chat/chatWindow";
+// import { ChatWindow } from "@/components/chat/chatWindow";
 
 interface ChatProps {
 	userId: string;
@@ -11,13 +11,14 @@ const Main: React.FC<ChatProps> = ({ userId, dateString }) => {
 	const emptyInfoCard = <></>;
 
 	return (
-		<ChatWindow
-			endpoint="api/chat"
-			emoji=""
-			titleText={dateString}
-			placeholder="I am Ioulia, your personal AI assistant. Help may I help you today?"
-			emptyStateComponent={emptyInfoCard}
-		></ChatWindow>
+		// <ChatWindow
+		// 	endpoint="api/chat"
+		// 	emoji=""
+		// 	titleText={dateString}
+		// 	placeholder="I am Ioulia, your personal AI assistant. Help may I help you today?"
+		// 	emptyStateComponent={emptyInfoCard}
+		// ></ChatWindow>
+		<div></div>
 	);
 };
 

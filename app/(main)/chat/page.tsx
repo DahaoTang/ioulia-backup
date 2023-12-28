@@ -12,7 +12,7 @@ export default function ChatPage() {
 
 	return (
 		<div>
-			<Main userId={userId} dateString={dateString}/>
+			<Main userId={userId} dateString={dateString} />
 		</div>
 	);
 }

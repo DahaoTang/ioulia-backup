@@ -1,7 +1,6 @@
 import prisma from "@/lib/db/prisma";
 import {
 	createRecordSchema,
-	getRecordSchema,
 	deleteRecordSchema,
 	updateRecordSchema,
 } from "@/lib/validation/record";

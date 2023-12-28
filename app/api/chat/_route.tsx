@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
 import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
@@ -30,7 +29,7 @@ const PREFIX_TEMPLATE = `You are a helpful private assistant named ioulia. Your 
  *
  * https://js.langchain.com/docs/modules/agents/agent_types/openai_functions_agent
  */
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
 	try {
 		const { userId } = auth();
 		if (!userId) {
@@ -81,7 +80,7 @@ export async function POST(req: NextRequest) {
 
 		// Intermediate steps are too complex to stream
 		if (returnIntermediateSteps) {
-			return NextResponse.json(
+			return Response.json(
 				{ output: result.output, intermediate_steps: result.intermediateSteps },
 				{ status: 200 }
 			);
@@ -104,6 +103,6 @@ export async function POST(req: NextRequest) {
 			return new StreamingTextResponse(fakeStream);
 		}
 	} catch (e: any) {
-		return NextResponse.json({ error: e.message }, { status: 500 });
+		return Response.json({ error: e.message }, { status: 500 });
 	}
 }
